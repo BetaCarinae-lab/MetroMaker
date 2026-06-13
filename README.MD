@@ -3,10 +3,10 @@ Will write stuff here eventually, dont know what yet
 maybe a modding guide
 
 
-# [
-#   NOTE: This modding api was never fully implemented, It might be later,
-#   but no promises
-# ]
+##   NOTE: This modding api was never fully implemented, It might be later,
+##   but no promises
+<hr>
+
 ### ITS TIME FOR A MODDING GUIDE!!!
 ## How to add new tiles:
 # find id_vals object
