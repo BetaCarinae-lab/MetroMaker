@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html style="background-color: rgb(21, 20, 36);">
+    <head>
+        <meta charset="utf8">
+        <title id="title">City Builder v0.2-Beta</title>
+
+        <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body id="redborder">
+        <script src="./scripts/TEXTURES.js" defer></script>
+        <script src="./scripts/agenthandler.js" defer></script>
+        <script src="./scripts/keybinds.js" defer></script>
+        <script src="./scripts/windows.js" defer></script>
+        <script src="./scripts/MAIN.js" defer></script>
+        <script src="./scripts/populationlogic.js"></script>
+        <div id="main-container">
+            <div id="ui-container">
+                <!--UI goes here-->
+                <h3 style="color:white;">Mode: <span id="mode-label">Day</span></h3>
+
+                
+                <header style="color:rgb(40, 97, 103); font-family: 'Times New Roman', Times, serif;">CTY BUILDR</header>
+                <h3 id="version-disp"></h3>
+                
+                <fieldset style="display: none;">
+                    <legend>Import/Export Options</legend>
+                    <button onclick="download()">Export City as .cty</button>
+                    <input id="cty_input" type="file" placeholder="INPUT .cty" accept=".cty" style="color: whitesmoke">
+                    <button id="submit_input">SUBMIT .cty FILE</button>
+                </fieldset>
+
+                <button id="gotosavescreen">Go To Save Screen</button>
+
+                <h3><button onclick="Tutorial()">TUTORIAL</button></h3>
+
+                <button onclick="techtree()">Tech "Tree"</button>
+
+                <button onclick="credits()">View Credits</button>
+
+                <button onclick="policies()">City Policies</button>
+                
+                <button onclick="keybindmenu()">Keybinds</button>
+
+                <button title="Demolish Tiles" id="demolish">Demolish</button>
+                <button id="road" title="Road Tile">Road</button>
+
+                <fieldset style="margin: 10px; color: white">
+                    <legend>Road Building Modes</legend>
+                    <button id="regular_road">Regular (Single Tile Placement)</button>
+                    <button id="easy_road">Easy Road (Click One Point, Click another, Draws road inbetween)</button>
+
+                </fieldset>
+            
+                <div id="house_menu">
+                    <fieldset>
+                        <legend>House Types</legend>
+                        <button id="house" title="tax: 4, population max: 4, power taken: 1, water taken: 2">Basic House $2</button>
+                        <button id="house_med" title="maintainence: 10, tax: 6, population_max: 10, power taken: 5, water taken: 10">Medium House $25</button>
+                        <button id="house_high" title="maintainence: 100, tax: 100, jobs: 50, power provided: 500, water taken: 500">High Density House $100</button>
+                    </fieldset>
+                </div>
+                <div id="shop_menu">
+                    <fieldset>
+                        <legend>Shop Types</legend>
+                        <button id="shop" title="tax: 5, jobs: 4, power taken: 2, water taken: 1">Basic Shop $2</button> <br>
+                        <button id="shop_med" title="maintainence: 15, tax: 10, jobs: 10, power taken: 10, water taken: 10">Medium Shop $25</button>
+                        <button id="shop_high" title="maintainence: 50, tax: 60, population max: 5, jobs: 40, power taken: 30, water taken: 20,">High Density Shop $100</button>
+                    </fieldset>
+                </div>
+                <div id="power_menu">
+                    <fieldset>
+                        <legend>Power Plant Types</legend>
+                        <button id="power" title="maintainence: 4, tax: 2, jobs: 3, power provided: 10, water taken: 5,">Small Coal Power Plant $5</button>
+                        <button id="power_med" title="maintainence: 15, tax: 10, jobs: 4, power taken: 10, water provided: 30">Large Gas Power Plant $30</button>
+                        <button id="power_high" title="maintainence: 100, tax: 100, jobs: 50, power provided: 500, water taken: 500,">Nuclear Power Plant $1000</button>
+                    </fieldset>
+                </div>
+                <div id="water-collecter_menu">
+                    <fieldset>
+                        <legend>Water Pumps</legend>
+                        <button id="water_collecter" title="maintainence: 5, tax: 4, jobs: 2, power taken: 2, Provides 10 Water">Turbine Water Pump $2</button>
+                        <button id="water_collecter_med" title="maintainence: 15, tax: 10, jobs: 4, power taken: 10, water provided: 30,">Vaccuum Water Pump $30</button>
+                        <button id="water_collecter_high" title="maintainence: 150, tax: 110, jobs: 25, power taken: 50, water provided: 1000,">Nuclear Powered 30 Turbine Water Pump $500</button>
+                    </fieldset>
+                </div>
+                <div id="offices_menu">
+                    <fieldset>
+                        <legend>Offices</legend>
+                        <button id="office">Office 10$</button>
+                        <button id="office_med">Medium Office 30$</button>
+                        <button id="office_high">High Office 100$</button>
+                    </fieldset>
+                </div>
+                <div id="industrial_menu">
+                    <fieldset>
+                        <legend>Industrial</legend>
+                        <button id="industrial">Small Factory 2$</button>
+                    </fieldset>
+                </div>
+                <div id="essentials">
+                    <fieldset>
+                        <legend>Essential Tiles</legend>
+                        <button id="police" title="buggy, will be fixed later">Police Station</button>
+                        <button id="research_hall" title="Increases Points">Research Hall</button>
+                    </fieldset>
+                </div>
+                <input id="tile_debug_pos" type="checkbox"> <label for="tile_debug_pos">Enable Tile-Debug</label>
+                <button id="test">Test TILE COORDS</button>
+
+
+
+            </div>
+
+            <div id="ot" style="color: aliceblue">
+                <h4>Time of Day: <strong id="time"></strong></h4>
+                <pre id="offset"></pre>
+                <div>
+                    <h3><strong>Citizen Happiness Info</strong></h3>
+                    <strong><pre id="citizen happiness display" style="font-size: large;">
+
+                    </pre></strong>
+                </div>    
+                <fieldset style="margin: 10px; color: white;">
+                    <legend>City Info</legend>
+                    <div id="city-info">
+                        <strong title="used to unlock things, aquired by getting large population"><h3>UNLOCK POINTS: </h3><span id="city-points"></span></strong>
+                        <strong title="ca-ching"><h3>MONEY: <span id="city-money"></span></h3></strong>
+                        <h3 title="The Happiness of your Citizens, Affects Demand and Actual Population">Citizen Happiness: <span id="city-happiness"></span></h3>
+                        <p title="The Demand for your city, if higher then more people will want to live in your city">Demand: <span id="city-demand"></span></p>
+                        <p title="Due to a bug, the actual population can exceed this, can be increased by building more houses">Population at max: <span id="city-pop">0</span></p>
+                        <p title="The actual amount of people in your city">Actual Population: <span id="city-actual-population">0</span></p>
+                        <p title="How much money your city makes every update cycle (1.5s)">Income: $<span id="city-income">0</span></p>
+                        <p title="How much money your city loses every update cycle (1.5s)">Expenses: <span id="expense"></span></p>
+                        <p title="How many jobs are in your city">Jobs: <span id="city-jobs">0</span></p>
+                        <p title="Power Meter, if power is negative then Citizen happiness goes down">Power: <span id="city-power">0</span>W</p>
+                        <p title="Water Meter, if water is negative then Citizen happiness goes down">Water: <span id="city-water">0</span> Gal</p>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="middle">
+                <canvas id="people" style="display: none;"></canvas>
+                <canvas id="world"></canvas>
+            </div>
+            <div id="notifications-container"></div>
+        </div>
+    </body>
+
+    <noscript>MetroMaker <strong>REQUIRES</strong> Javascript, Please turn js on to play the game</noscript>
+    <div id="saves">
+        <h3>GAME SAVES: </h3>
+        <div id="savecontainer">
+            <h1>Saves: </h1>
+        </div>
+        <button id="new-save">NEW SAVE</button>
+    </div>
+</html>
