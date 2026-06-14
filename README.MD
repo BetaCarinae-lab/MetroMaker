@@ -9,15 +9,15 @@ maybe a modding guide
 
 ### ITS TIME FOR A MODDING GUIDE!!!
 ## How to add new tiles:
-# find id_vals object
+### find id_vals object
 Fill this out and put it at the bottom of the object
 { name: string, price: int, maintainence: int, tax: int, population_max: int, jobs: int, power_provided: int, power_taken: int, water_provided: int, water_taken: int, requiresRoad: bool}
 
-# Then find tile_types object
+### Then find tile_types object
 Now this add to the bottom of tile_types
 { color: string (MUST BE HEX COLOR), id: int (make sure id is just +1 from the previous tile), texture: null (Only use if you know what your doing)}
 
-# Find const toolButtons = [] at around ln: 1213 (may change)
+### Find const toolButtons = [] at around ln: 1213 (may change)
 Add your tile name to the array
 
 # Now add a button to the html
