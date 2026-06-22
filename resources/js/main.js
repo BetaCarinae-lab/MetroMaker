@@ -1,57 +1,12 @@
+import { texturesAtlas } from "./textures.js"
+import { id_vals, tile_types } from "./tiles.js"
+import { version } from "./global.js"
+import { notif } from "./notifications.js"
 try {
-    class notif {
-    constructor(content, color, time) {
-        this.content = content
-        this.color = color
-        this.time = time
-        this.display()
-    }
-
-    display() {
-        const container = document.getElementById('notifications-container')
-        const notification = document.createElement('div')
-        notification.classList.add('notification')
-
-        if(container == null) {
-            alert('NOTIF:ERROR: Container is Null')
-            return;
-        } 
-
-
-        if(typeof this.content == "object") {
-            this.content = JSON.stringify(this.content)
-            notification.innerText = this.content
-        } else {
-            this.content = this.content
-            notification.innerText = this.content
-        }
-
-        if(this.time <= 0 || !this.time) {
-            this.time = 5000
-        }
-
-        if(this.color) {
-            notification.style.backgroundColor = this.color
-        } else {
-            notification.style.backgroundColor = 'cyan'
-        }
-
-        container.appendChild(notification) 
-
-        //house.removeChild()
-        //woman.appendChild()
-
-        setTimeout(() => {
-            if(container.contains(notification)) {
-                container.removeChild(notification)
-            }
-        }, 5000)
-    }
-}
-const version = 'v1.15.20';
 
 new notif(`MetroMaker ${version}`, 'purple')
 
+//@ts-nocheck
 function random(min, max) {
     return Math.random() * (max - min) + min
 }
@@ -61,21 +16,14 @@ document.getElementById('version-disp').textContent = `Version: ${version}`;
 // Setup canvas and world
 const canvas = document.getElementById('world');
 const ctx = canvas.getContext('2d');
-const people_canvas = document.getElementById('people');
-const ctx_people = people_canvas.getContext('2d')
 let tileSize = 20;
 canvas.width = 57 * tileSize;
 canvas.height = 38 * tileSize;
-people_canvas.width = 57 * tileSize;
-people_canvas.height = 38 * tileSize;
 let dayTime = -15 //-30 -> 30
 let dayIncreasing = true;
 let paused = true;
-let waspaused = true
-let somepeople = false
+let disableMoneyNegativeCheck = false
 ctx.imageSmoothingEnabled = false;
-ctx_people.imageSmoothingEnabled = false;
-let zoom = 0;
 let loading = false;
 const people  = []
 
@@ -90,8 +38,6 @@ const keybinds = {
     in: 'q',
     out: 'e',
 }
-
-//let textures2 = {}
 
 const city_vals = {
     demand: 0,
@@ -114,67 +60,6 @@ const city_vals = {
     }
 }
 
-let population_modified = false
-
-const tile_types = {
-    demolish: { color: null, id: -1, texture: null, unlocked: true},
-    grass: { color: "#1d8038", id: 0, texture: null, unlocked: true},
-    road: { color: "#555", id: 1, texture: null, unlocked: true},
-    house: { color: "yellow", id: 2, unlocked: true},
-    shop: { color: "#3293a8", id: 3, unlocked: true},
-    water: { color: "blue", id: 4, unlockded: true},
-    power: { color: "#727373", id: 5, unlocked: true},
-    water_collecter: { color: "#00008B", id: 6, unlocked: true},
-    house_med: { color: '#a88d32', id: 7, unlocked: false},
-    shop_med: { color: '#5c32a8', id: 8, unlocked: false},
-    power_med: { color: 'grey', id: 9, unlocked: false},
-    water_collecter_med: { color: 'cyan', id: 10, unlocked: false},
-    house_high: { color: '#a86f32', id: 11, unlocked: false},
-    shop_high: { color: '#6d32a8', id: 12, unlocked: false},
-    power_high: { color: 'black', id: 13, unlocked: false},
-    water_collecter_high: { color: '#010154', id: 14, unlocked: false},
-    police: { color: null, id: 15, unlocked: true},
-    research_hall: { color: null, id: 16, unlocked: false},
-    border: { color: 'grey', id: 17, unlocked: true},
-    office: { color: null, id: 18, unlocked: false},
-    office_med: { color: null, id: 19, unlocked: false},
-    office_high: { color: null, id: 20, unlocked: false},
-    industrial: { color: null, id: 21, unlocked: true},
-    source_top: { color: null, id: 22, unlocked: true, source: null},
-    source_bottom: { color: null, id: 23, unlocked: true, source: null},
-    source_left: { color: null, id: 24, unlocked: true, source: null,},
-    source_right: { color: null, id: 25, unlocked: true, source: null},
-};
-
-const id_vals = [
-    { name: 'grass', price: 0, maintainence: 0, tax: 0, population_max: 0, jobs: 0, power_provided: 0, power_taken: 0, water_provided: 0, water_taken: 0, requiresRoad: false},
-    { name: 'road', price: 0, maintainence: 0, tax: 0, population_max: 0, jobs: 0, power_provided: 0, power_taken: 0, water_provided: 0, water_taken: 0, requiresRoad: false},
-    { name: 'house', price: 2, maintainence: 0, tax: 4, population_max: 4, jobs: 0, power_provided: 0, power_taken: 1, water_provided: 0, water_taken: 2, requiresRoad: true},
-    { name: 'shop', price: 2, maintainence: 0, tax: 10, population_max: 0, jobs: 4, power_provided: 0, power_taken: 2, water_provided: 0, water_taken: 1, requiresRoad: true},
-    { name: 'water', price: 0, maintainence: 0, tax: 0, population_max: 0, jobs: 0, power_provided: 0, power_taken: 0, water_provided: 0, water_taken: 0, requiresRoad: false},
-    { name: 'power', price: 5, maintainence: 4, tax: 4, population_max: 0, jobs: 3, power_provided: 10, power_taken: 0, water_provided: 0, water_taken: 5, requiresRoad: true},
-    { name: 'water_collecter', price: 2, maintainence: 5, tax: 5, population_max: 0, jobs: 2, power_provided: 0, power_taken: 2, water_provided: 10, water_taken: 0, requiresRoad: true},
-    { name: 'house_med', price: 20, maintainence: 10, tax: 6, population_max: 10, jobs: 0, power_provided: 0, power_taken: 5, water_provided: 0, water_taken: 10, requiresRoad: true},
-    { name: 'shop_med', price: 25, maintainence: 15, tax: 10, population_max: 0, jobs: 10, power_provided: 0, power_taken: 10, water_provided: 0, water_taken: 10, requiresRoad: true},
-    { name: 'power_med', price: 30, maintainence: 15, tax: 10, population_max: 0, jobs: 10, power_provided: 50, power_taken: 0, water_provided: 0, water_taken: 10, requiresRoad: true},
-    { name: 'water_collecter_med', price: 30, maintainence: 15, tax: 10, population_max: 0, jobs: 4, power_provided: 0, power_taken: 10, water_provided: 30, water_taken: 0, requiresRoad: true},
-    { name: 'house_high', price: 100, maintainence: 50, tax: 40, population_max: 100, jobs: 10, power_provided: 0, power_taken: 30, water_provided: 0, water_taken: 20, requiresRoad: true},
-    { name: 'shop_high', price: 120, maintainence: 50, tax: 60, population_max: 5, jobs: 40, power_provided: 0, power_taken: 30, water_provided: 0, water_taken: 20, requiresRoad: true},
-    { name: 'power_high', price: 1000, maintainence: 100, tax: 100, population_max: 0, jobs: 50, power_provided: 500, power_taken: 0, water_provided: 0, water_taken: 500, requiresRoad: true},
-    { name: 'water_collecter_high', price: 500, maintainence: 150, tax: 110, population_max: 0, jobs: 25, power_provided: 0, power_taken: 50, water_provided: 1000, water_taken: 0, requiresRoad: true},
-    { name: 'police', price: 4, maintainence: 3, tax: 10, population_max: 0, jobs: 5, power_provided: 0, power_taken: 1, water_provided: 0, water_taken: 4, requiresRoad: true},
-    { name: 'research_hall', price: 50, maintainence: 10, tax: 0, population_max: 0, jobs: 4, power_provided: 0, power_taken: 5, water_provided: 0, water_taken: 2, requiresRoad: true},
-    { name: 'border', price: 0, maintainence: 0, tax: 0, population_max: 0, jobs: 0, power_provided: 0, power_taken: 0, water_provided: 0, water_taken: 0, requiresRoad: false},
-    { name: 'office', price: 10, maintainence: 3, tax: 8, population_max: 0, jobs: 5, power_provided: 0, power_taken: 3, water_provided: 0, water_taken: 3, requiresRoad: true},
-    { name: 'office_med', price: 30, maintainence: 8, tax: 13, population_max: 0, jobs: 10, power_provided: 0, power_taken: 5, water_provided: 0, water_taken: 5, requiresRoad: true},
-    { name: 'office_high', price: 100, maintainence: 10, tax: 20, population_max: 0, jobs: 20, power_provided: 0, power_taken: 10, water_provided: 0, water_taken: 10, requiresRoad: true},
-    { name: 'industrial', price: 2, maintainence: 3, tax: 5, population_max: 0, jobs: 3, power_provided: 0, power_taken: 4, water_provided: 0, water_taken: 2, requiresRoad: true},
-    { name: 'source_top', price: 0, maintainence: 0, tax: 0, population_max: 0, jobs: 0, power_provided: 0, power_taken: 0, water_provided: 0, water_taken: 0, requiresRoad: false},
-    { name: 'source_bottom', price: 0, maintainence: 0, tax: 0, population_max: 0, jobs: 0, power_provided: 0, power_taken: 0, water_provided: 0, water_taken: 0, requiresRoad: false},
-    { name: 'source_left', price: 0, maintainence: 0, tax: 0, population_max: 0, jobs: 0, power_provided: 0, power_taken: 0, water_provided: 0, water_taken: 0, requiresRoad: false},
-    { name: 'source_right', price: 0, maintainence: 0, tax: 0, population_max: 0, jobs: 0, power_provided: 0, power_taken: 0, water_provided: 0, water_taken: 0, requiresRoad: false},
-]
-
 const tile_counts = {
     grass: 0,
     road: 0,
@@ -184,8 +69,7 @@ const tile_counts = {
     power: 0,
     water_collecter: 0,
 }
-//let pop = [10, 50, 70, 100, 200]
-//let pts = [20, 45, 50, 100, 105]
+
 const sourcesTiles = {
     in: [],
     out: [],
@@ -402,52 +286,52 @@ function road(x, y) {
     }
 
     if(up && down && right && left) {
-        world.grid[y][x].texture = textures2.road.quad_intersection
+        world.grid[y][x].texture = texturesAtlas.road.quad_intersection
     }
     if(up && down && !right && !left) { 
-        world.grid[y][x].texture = textures2.road.vertical
+        world.grid[y][x].texture = texturesAtlas.road.vertical
     }
     if(!up && !down && right && left) {
-        world.grid[y][x].texture = textures2.road.horizontal
+        world.grid[y][x].texture = texturesAtlas.road.horizontal
     }
     if(!up && down && !right && !left) {
-        world.grid[y][x].texture = textures2.road.dead_end_vertical_down
+        world.grid[y][x].texture = texturesAtlas.road.dead_end_vertical_down
     }
     if(up && !down && !right && !left) {
-        world.grid[y][x].texture = textures2.road.dead_end_vertical_up
+        world.grid[y][x].texture = texturesAtlas.road.dead_end_vertical_up
     }
     if(!up && !down && !right && left) {
-        world.grid[y][x].texture = textures2.road.dead_end_horizontal_left
+        world.grid[y][x].texture = texturesAtlas.road.dead_end_horizontal_left
     }
     if(!up && !down && right && !left) {
-        world.grid[y][x].texture = textures2.road.dead_end_horizontal_right
+        world.grid[y][x].texture = texturesAtlas.road.dead_end_horizontal_right
     }
     if(up && !down && left && right) {
-        world.grid[y][x].texture = textures2.road.T_intersection.down
+        world.grid[y][x].texture = texturesAtlas.road.T_intersection.down
     }
     if(!up && down && left && right) {
-        world.grid[y][x].texture = textures2.road.T_intersection.up
+        world.grid[y][x].texture = texturesAtlas.road.T_intersection.up
     }
     if(up && down && !left && right) {
-        world.grid[y][x].texture = textures2.road.T_intersection.right
+        world.grid[y][x].texture = texturesAtlas.road.T_intersection.right
     }
     if(up && down && left && !right) {
-        world.grid[y][x].texture = textures2.road.T_intersection.left
+        world.grid[y][x].texture = texturesAtlas.road.T_intersection.left
     }
     if(!up && !down && !left && !right) {
-        world.grid[y][x].texture = textures2.road.isolated
+        world.grid[y][x].texture = texturesAtlas.road.isolated
     }
     if(up && left && !down && !right) {
-        world.grid[y][x].texture = textures2.road.corners.one
+        world.grid[y][x].texture = texturesAtlas.road.corners.one
     }
     if(up && !left && !down && right) {
-        world.grid[y][x].texture = textures2.road.corners.four
+        world.grid[y][x].texture = texturesAtlas.road.corners.four
     }
     if(!up && left && down && !right) {
-        world.grid[y][x].texture = textures2.road.corners.two
+        world.grid[y][x].texture = texturesAtlas.road.corners.two
     }
     if(!up && !left && down && right) {
-        world.grid[y][x].texture = textures2.road.corners.three
+        world.grid[y][x].texture = texturesAtlas.road.corners.three
     }
 }
 //#endregion
@@ -507,7 +391,7 @@ function drawWorld() {
                     }
                 }
 
-                if(city_vals.money <= 0 && !somepeople) {
+                if(city_vals.money <= 0 && !disableMoneyNegativeCheck) {
                     paused = true
                     let choice = prompt(`Your Money Has Fallen into the negatives?, 
                     would you like a boost ($10)?
@@ -521,20 +405,20 @@ function drawWorld() {
                         let really = confirm() 
                         if(really) {
                             location.reload()
-                            somepeople = true
+                            disableMoneyNegativeCheck = true
                         }
                     }
                     if(choice == 'EXIT') {
-                        somepeople = true
+                        disableMoneyNegativeCheck = true
                         return;
                     }
                 }
 
                 //Draw
                 //Texture Test
-                if(textures2[id_vals[world.grid[y][x].id].name] && world.grid[y][x].id !== 1) {
+                if(texturesAtlas[id_vals[world.grid[y][x].id].name] && world.grid[y][x].id !== 1) {
                     let texture = new Image()
-                    texture.src = textures2[id_vals[world.grid[y][x].id].name]
+                    texture.src = texturesAtlas[id_vals[world.grid[y][x].id].name]
                     ctx.drawImage(texture, (x + world.offsetX) * tileSize, (y + world.offsetY) * tileSize, tileSize, tileSize)
                 } else if(id_vals[world.grid[y][x].id].name === 'road') {
                     road(x , y)
@@ -546,16 +430,16 @@ function drawWorld() {
                     let id = world.grid[y][x].id
                     let tex
                     if(id == 22) {
-                        tex = textures2.road.source.top
+                        tex = texturesAtlas.road.source.top
                     }
                     if(id == 23) {
-                        tex = textures2.road.source.bottom
+                        tex = texturesAtlas.road.source.bottom
                     }
                     if(id == 24) {
-                        tex = textures2.road.source.left
+                        tex = texturesAtlas.road.source.left
                     }
                     if(id == 25) {
-                        tex = textures2.road.source.right
+                        tex = texturesAtlas.road.source.right
                     }
                     let texture = new Image()
                     texture.src = tex

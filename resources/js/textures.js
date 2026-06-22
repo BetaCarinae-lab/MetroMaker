@@ -1,7 +1,7 @@
-const textures2 = {
+export const texturesAtlas = {
     grass: null,
     road: {
-        isolated: '/MetroMaker/MetroMaker Tiles/Roads/Road_TIle_Isolated.png',
+        isolated: 'MetroMaker Tiles/Roads/Road_TIle_Isolated.png',
         dead_end_horizontal_right: 'MetroMaker Tiles/Roads/Road_Tile_Horizontal_DeadEnd_Left.png',
         dead_end_horizontal_left: 'MetroMaker Tiles/Roads/Road_Tile_Horizontal_DeadEnd_Right.png',
         dead_end_vertical_down: 'MetroMaker Tiles/Roads/Road_Tile_Vertical_DeadEnd_Down.png',
