@@ -1,3 +1,7 @@
+/*
+import { notif } from "./notifications";
+import { tile_types } from "./tiles";
+
 function credits() {
     const credits = window.open('', '_blank', 'width=600,height=400');
     if(credits) {
@@ -159,7 +163,7 @@ if(Tutorial) {
 }
 
 function techtree() {
-    const techtree = window.open('', '_blank', 'width=600,height=400') 
+    const techtree = window.open('', '_blank', 'width=600,height=400')
     if(techtree) {
         const techtree_html = `
         <body style="background-color: grey">
@@ -234,7 +238,7 @@ function techtree() {
         const unlcok_bootuns_points_required = [15, 50, 20, 40, 35, 50, 20 , 50, 40, 10, 20 ,40]
         const unlcok_bootuns_better_names = ['Medium Density House', 'High Density House', 'Medium Density Shop', 'High Density Shop', 'Gas Power Plant', 'Nuclear Power Plant', 'Vaccuum Water Pump', 'Nuclear Powered 30 Turbine Water Pump', 'Research Hall', 'Office', 'Office Medium', 'Office High']
         unlcok_bootuns.forEach((bootun, index) => {
-            const bootun_ = techtree.document.getElementById(bootun) 
+            const bootun_ = techtree.document.getElementById(bootun)
             bootun_.addEventListener('click', (e) => {
                 if(tile_types[bootun.replace('_unlock', '')].unlocked) {
                     new notif('Aready Unlocked!')
@@ -247,7 +251,7 @@ function techtree() {
                     <strong>Points Required ${total_points}</strong>
                     <pre>${JSON.stringify(gonnaunlockthese).replace('[', '').replace(']', '').replace('"', '').replace('"', '').replace('_', ' ').replace(',', ', ')}</pre>
                 `
-            })                
+            })
         })
 
         techtree.document.getElementById('unlock_selected').addEventListener('click', () => {
@@ -323,7 +327,7 @@ function policies() {
                                 <h3>Description</h3>
                                 A water awareness program, Lessens Water Use, but increases expenses 'slightly'
                                 <strong>CANNOT BE USED IF Energy Usage Awarenss IS ACTIVE</strong>
-                                Stats: 
+                                Stats:
                                 Water: +8
                                 Expenses +5
                             </pre>
@@ -400,5 +404,7 @@ function policies() {
                 `)
             }
         })
-    }  
+    }
 }
+*/ 
+//# sourceMappingURL=windows.js.map

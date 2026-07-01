@@ -48,4 +48,5 @@ export const texturesAtlas = {
     office_med: 'MetroMaker Tiles/office/office_med.png',
     office_high: 'MetroMaker Tiles/office/office_high.png',
     industrial: 'MetroMaker Tiles/other_unused/other/industrial.png',
-}
+};
+//# sourceMappingURL=textures.js.map

@@ -1,0 +1,15 @@
+{
+  "name": "metromaker",
+  "version": "1.0.0",
+  "description": "Will write stuff here eventually, dont know what yet maybe a modding guide",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^6.0.3"
+  }
+}

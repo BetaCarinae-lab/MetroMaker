@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
+    "outDir": "./resources/js",
+    "rootDir": "./src",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strictNullChecks": false,
+  },
+  "include": ["src/**/*", "resources/js/agenthandler.js", "resources/js/neutralino.js"],
+  "exclude": ["node_modules"]
+}
