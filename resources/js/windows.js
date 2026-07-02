@@ -1,7 +1,8 @@
-/*
 import { notif } from "./notifications";
+import { showPopup } from "./windowManager.globalscript";
 import { tile_types } from "./tiles";
-
+import { city_vals } from "./main";
+/*
 function credits() {
     const credits = window.open('', '_blank', 'width=600,height=400');
     if(credits) {
@@ -161,117 +162,110 @@ if(Tutorial) {
     Tutorial.document.close()
 }
 }
-
-function techtree() {
-    const techtree = window.open('', '_blank', 'width=600,height=400')
-    if(techtree) {
-        const techtree_html = `
-        <body style="background-color: grey">
-            <fieldset>
-                <legend>TechTree</legend>
-                <h3>Points: <span id="point-display"></span></h3>
-                <button id="unlock_selected">Unlock Selected!</button>
-                <h3>You are unlocking these:</h3>
-                <pre id="these">None Selected</pre>
-                <style>
-                    button {
-                        padding: 8px 16px;
-                        margin: 4px;
-                        border: none;
-                        border-radius: 4px;
-                        background-color: #444;
-                        color: #fff;
-                        font-weight: bold;
-                        cursor: pointer;
-                        transition: background-color 0.2s;
-                    }
-                    button:hover {
-                        background-color: #666;
-                    }
-                    button.active {
-                        background-color: #00b894;
-                    }
-                </style>
-
-                <fieldset>
-                    <legend>Houses</legend>
-                    <button id="house_med_unlock">Medium Density: 15 pt</button>
-                    <button id="house_high_unlock">High Density: 50 pt</button>
-                </fieldset>
-                <fieldset>
-                    <legend>Shops</legend>
-                    <button id="shop_med_unlock">Medium Density: 20 pt</button>
-                    <button id="shop_high_unlock">High Density: 40 pt</button>
-                </fieldset>
-                <fieldset>
-                    <legend>Power Plants</legend>
-                    <button id="power_med_unlock">Gas Power: 35 pt</button>
-                    <button id="power_high_unlock">Nuclear Power: 50 pt</button>
-                </fieldset>
-                <fieldset>
-                    <legend>Water Pumps</legend>
-                    <button id="water_collecter_med_unlock">Vaccuum Water Pump: 20 pt</button>
-                    <button id="water_collecter_high_unlock">Nuclear Powered 30 Turbine Water Pump: 50 pt</button>
-                </fieldset>
-                <fieldset>
-                    <legend>Offices</legend>
-                    <button id="office_unlock">Office 10 pt</button>
-                    <button id="office_med_unlock">Office Medium 20 pt</button>
-                    <button id="office_high_unlock">Office High 40 pt</button>
-                </fieldset>
-                <fieldset>
-                    <legend>Other</legend>
-                    <button id="research_hall_unlock">Research Hall: 40 pt</button>
-                </fieldset>
-
-                <p display="none" id="transfur"></p>
-            </fieldset>
-        </body>
-        `
-        techtree.document.write(techtree_html)
-        techtree.document.getElementById('point-display').textContent = city_vals.points
-
-        const gonnaunlockthese = []
-        let total_points = 0
-
-        const unlcok_bootuns = ['house_med_unlock', 'house_high_unlock', 'shop_med_unlock', 'shop_high_unlock', 'power_med_unlock', 'power_high_unlock', 'water_collecter_med_unlock', 'water_collecter_high_unlock', 'research_hall_unlock', 'office_unlock', 'office_med_unlock', 'office_high_unlock']
-        const unlcok_bootuns_points_required = [15, 50, 20, 40, 35, 50, 20 , 50, 40, 10, 20 ,40]
-        const unlcok_bootuns_better_names = ['Medium Density House', 'High Density House', 'Medium Density Shop', 'High Density Shop', 'Gas Power Plant', 'Nuclear Power Plant', 'Vaccuum Water Pump', 'Nuclear Powered 30 Turbine Water Pump', 'Research Hall', 'Office', 'Office Medium', 'Office High']
-        unlcok_bootuns.forEach((bootun, index) => {
-            const bootun_ = techtree.document.getElementById(bootun)
-            bootun_.addEventListener('click', (e) => {
-                if(tile_types[bootun.replace('_unlock', '')].unlocked) {
-                    new notif('Aready Unlocked!')
-                    return;
+*/
+export function techtree() {
+    const techtree = `
+    <body style="background-color: grey">
+        <fieldset>
+            <legend>TechTree</legend>
+            <h3>Points: <span id="point-display"></span></h3>
+            <button id="unlock_selected">Unlock Selected!</button>
+            <h3>You are unlocking these:</h3>
+            <pre id="these">None Selected</pre>
+            <style>
+                button {
+                    padding: 8px 16px;
+                    margin: 4px;
+                    border: none;
+                    border-radius: 4px;
+                    background-color: #444;
+                    color: #fff;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: background-color 0.2s;
                 }
-                gonnaunlockthese.push(bootun.replace('_unlock', ''))
-                
-                total_points = total_points + unlcok_bootuns_points_required[index]
-                techtree.document.getElementById('these').innerHTML = `
-                    <strong>Points Required ${total_points}</strong>
-                    <pre>${JSON.stringify(gonnaunlockthese).replace('[', '').replace(']', '').replace('"', '').replace('"', '').replace('_', ' ').replace(',', ', ')}</pre>
-                `
-            })
-        })
+                button:hover {
+                    background-color: #666;
+                }
+                button.active {
+                    background-color: #00b894;
+                }
+            </style>
 
-        techtree.document.getElementById('unlock_selected').addEventListener('click', () => {
-            if(total_points > city_vals.points) {
-                techtree.close()
-                new notif('You Dont Have Enough Points!')
-            } else {
-                gonnaunlockthese.forEach((unlocked, indx) => {
-                    new notif('unlocking ' + unlocked)
-                    tile_types[unlocked].unlocked = true
-                })
-                city_vals.points -= total_points
-                new notif('Unlocked!')
-                techtree.close()
+            <fieldset>
+                <legend>Houses</legend>
+                <button id="house_med_unlock">Medium Density: 15 pt</button>
+                <button id="house_high_unlock">High Density: 50 pt</button>
+            </fieldset>
+            <fieldset>
+                <legend>Shops</legend>
+                <button id="shop_med_unlock">Medium Density: 20 pt</button>
+                <button id="shop_high_unlock">High Density: 40 pt</button>
+            </fieldset>
+            <fieldset>
+                <legend>Power Plants</legend>
+                <button id="power_med_unlock">Gas Power: 35 pt</button>
+                <button id="power_high_unlock">Nuclear Power: 50 pt</button>
+            </fieldset>
+            <fieldset>
+                <legend>Water Pumps</legend>
+                <button id="water_collecter_med_unlock">Vaccuum Water Pump: 20 pt</button>
+                <button id="water_collecter_high_unlock">Nuclear Powered 30 Turbine Water Pump: 50 pt</button>
+            </fieldset>
+            <fieldset>
+                <legend>Offices</legend>
+                <button id="office_unlock">Office 10 pt</button>
+                <button id="office_med_unlock">Office Medium 20 pt</button>
+                <button id="office_high_unlock">Office High 40 pt</button>
+            </fieldset>
+            <fieldset>
+                <legend>Other</legend>
+                <button id="research_hall_unlock">Research Hall: 40 pt</button>
+            </fieldset>
+        </fieldset>
+
+        <button id="close_techtree"></button>
+    </body>
+    `;
+    showPopup(techtree, false);
+    techtree.document.getElementById('point-display').textContent = city_vals.points.toString();
+    const gonnaunlockthese = [];
+    let total_points = 0;
+    const unlcok_bootuns = ['house_med_unlock', 'house_high_unlock', 'shop_med_unlock', 'shop_high_unlock', 'power_med_unlock', 'power_high_unlock', 'water_collecter_med_unlock', 'water_collecter_high_unlock', 'research_hall_unlock', 'office_unlock', 'office_med_unlock', 'office_high_unlock'];
+    const unlcok_bootuns_points_required = [15, 50, 20, 40, 35, 50, 20, 50, 40, 10, 20, 40];
+    const unlcok_bootuns_better_names = ['Medium Density House', 'High Density House', 'Medium Density Shop', 'High Density Shop', 'Gas Power Plant', 'Nuclear Power Plant', 'Vaccuum Water Pump', 'Nuclear Powered 30 Turbine Water Pump', 'Research Hall', 'Office', 'Office Medium', 'Office High'];
+    unlcok_bootuns.forEach((bootun, index) => {
+        const bootun_ = techtree.document.getElementById(bootun);
+        bootun_.addEventListener('click', (e) => {
+            if (tile_types[bootun.replace('_unlock', '')].unlocked) {
+                new notif('Aready Unlocked!');
+                return;
             }
-        })
-    }
+            gonnaunlockthese.push(bootun.replace('_unlock', ''));
+            total_points = total_points + unlcok_bootuns_points_required[index];
+            techtree.document.getElementById('these').innerHTML = `
+                <strong>Points Required ${total_points}</strong>
+                <pre>${JSON.stringify(gonnaunlockthese).replace('[', '').replace(']', '').replace('"', '').replace('"', '').replace('_', ' ').replace(',', ', ')}</pre>
+            `;
+        });
+    });
+    techtree.document.getElementById('unlock_selected').addEventListener('click', () => {
+        if (total_points > city_vals.points) {
+            techtree.close();
+            new notif('You Dont Have Enough Points!');
+        }
+        else {
+            gonnaunlockthese.forEach((unlocked, indx) => {
+                new notif('unlocking ' + unlocked);
+                tile_types[unlocked].unlocked = true;
+            });
+            city_vals.points -= total_points;
+            new notif('Unlocked!');
+            techtree.close();
+        }
+    });
 }
-
-
+/*
 function policies() {
     const policies = window.open('', '_blank', 'width=1000,height=400')
     if(policies) {

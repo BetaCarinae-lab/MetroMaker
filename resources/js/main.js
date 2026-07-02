@@ -2,6 +2,27 @@ import { texturesAtlas } from "./textures.js";
 import { tile_types } from "./tiles.js";
 import { version } from "./global.js";
 import { notif } from "./notifications.js";
+export const city_vals = {
+    demand: 0,
+    maintainence: 0,
+    tax: 0,
+    population: 0,
+    population_max: 0,
+    jobs: 0,
+    power: 0,
+    money: 20,
+    happiness: 0,
+    water: 0,
+    points: 0,
+    milestonesReached: new Set(),
+    unhappy: [],
+    city_policies: {
+        ads: false,
+        energy_lessenation: false,
+        water_lessenation: false,
+    }
+};
+export const document_ref = document;
 try {
     new notif(`MetroMaker ${version}`, 'purple');
     //@ts-nocheck
@@ -30,26 +51,6 @@ try {
         right: 'd',
         in: 'q',
         out: 'e',
-    };
-    let city_vals = {
-        demand: 0,
-        maintainence: 0,
-        tax: 0,
-        population: 0,
-        population_max: 0,
-        jobs: 0,
-        power: 0,
-        money: 20,
-        happiness: 0,
-        water: 0,
-        points: 0,
-        milestonesReached: new Set(),
-        unhappy: [],
-        city_policies: {
-            ads: false,
-            energy_lessenation: false,
-            water_lessenation: false,
-        }
     };
     const tile_counts = {
         grass: 0,
@@ -323,7 +324,7 @@ try {
             city_vals.water = 0;
             for (let y = 0; y < world.rows; y++) {
                 for (let x = 0; x < world.cols; x++) {
-                    //city_vals.population_max += world.grid[y][x].tile_data.population_max
+                    city_vals.population_max += world.grid[y][x].tile_data.population_max;
                     city_vals.population = calculate_actual_population();
                     city_vals.tax += world.grid[y][x].tile_data.tax;
                     city_vals.maintainence += world.grid[y][x].tile_data.maintainence;
@@ -540,7 +541,7 @@ try {
         }
     }
     // Button logic
-    const toolButtons = ['demolish', 'road', 'house', 'shop', 'power', 'water_collecter', 'house_med', 'shop_med', 'power_med', 'water_collecter_med', 'house_high', 'shop_high', 'power_high', 'water_collecter_high', 'police', 'research_hall', 'test', 'office', 'office_med', 'office_high', 'industrial'];
+    const toolButtons = ['demolish', 'road', 'house', 'shop', 'power', 'water_pump', 'house_med', 'shop_med', 'power_med', 'water_pump_med', 'house_high', 'shop_high', 'power_high', 'water_pump_high', 'police', 'research_hall', 'test', 'office', 'office_med', 'office_high', 'industrial'];
     toolButtons.forEach(tool => {
         const btn = document.getElementById(tool);
         btn.addEventListener('click', () => {
@@ -846,7 +847,7 @@ try {
                 start.x += 1;
                 end.x -= 1;
                 //new notif(`START: ${start}, END: ${end}`)
-                new AGENT(start, end, 0.0001, 'john');
+                //new AGENT(start, end, 0.0001, 'john')
                 //new notif('Path: ' + JSON.stringify(test.path))
             }
             catch (error) {
